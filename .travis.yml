@@ -22,7 +22,7 @@ before_install:
 script:
   - ./init-wasm.sh
   - source ~/.cargo/env
-  - cargo test --all --release --locked
+  - ./test-all.sh
   - ./build-runtime.sh
   - ./build-node.sh
 
