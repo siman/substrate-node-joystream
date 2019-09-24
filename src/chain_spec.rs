@@ -16,11 +16,12 @@
 
 use hex_literal::{hex, hex_impl};
 use joystream_node_runtime::{
+    versioned_store::{InputValidationLengthConstraint as VsInputValidation},
     forum::InputValidationLengthConstraint, AccountId, ActorsConfig, BalancesConfig,
     ConsensusConfig, CouncilConfig, CouncilElectionConfig, DataObjectStorageRegistryConfig,
     DataObjectTypeRegistryConfig, DownloadSessionsConfig, ForumConfig, GenesisConfig,
     GrandpaConfig, IndicesConfig, MembersConfig, Perbill, ProposalsConfig, SessionConfig,
-    StakerStatus, StakingConfig, SudoConfig, TimestampConfig,
+    StakerStatus, StakingConfig, SudoConfig, TimestampConfig, VersionedStoreConfig,
 };
 use primitives::{crypto::UncheckedInto, ed25519, sr25519, Pair};
 use substrate_service;
@@ -172,6 +173,10 @@ fn new_validation(min: u16, max_min_diff: u16) -> InputValidationLengthConstrain
     return InputValidationLengthConstraint { min, max_min_diff };
 }
 
+fn new_vs_validation(min: u16, max_min_diff: u16) -> VsInputValidation {
+    return VsInputValidation { min, max_min_diff };
+}
+
 fn staging_testnet_config_genesis() -> GenesisConfig {
     let initial_authorities: Vec<(AccountId, AccountId, AuthorityId)> = vec![(
         hex!["0610d1a2b1d704723e588c842a934737491688b18b052baae1286f12e96adb65"].unchecked_into(), // stash
@@ -298,6 +303,17 @@ fn staging_testnet_config_genesis() -> GenesisConfig {
 			enable_storage_role: true,
 			request_life_time: 300,
 			_genesis_phantom_data: Default::default(),
+		}),
+		versioned_store: Some(VersionedStoreConfig {
+			class_by_id: vec![],
+			entity_by_id: vec![],
+			next_class_id: 1,
+			next_entity_id: 1,
+			property_name_constraint: new_vs_validation(1, 99),
+			property_description_constraint: new_vs_validation(1, 999),
+			class_name_constraint: new_vs_validation(1, 99),
+			class_description_constraint: new_vs_validation(1, 999),
+			_genesis_phantom_data: Default::default(),
 		})
 	}
 }
@@ -414,6 +430,17 @@ fn testnet_genesis(
 		actors: Some(ActorsConfig{
 			enable_storage_role: true,
 			request_life_time: 300,
+			_genesis_phantom_data: Default::default(),
+		}),
+		versioned_store: Some(VersionedStoreConfig {
+			class_by_id: vec![],
+			entity_by_id: vec![],
+			next_class_id: 1,
+			next_entity_id: 1,
+			property_name_constraint: new_vs_validation(1, 99),
+			property_description_constraint: new_vs_validation(1, 999),
+			class_name_constraint: new_vs_validation(1, 99),
+			class_description_constraint: new_vs_validation(1, 999),
 			_genesis_phantom_data: Default::default(),
 		})
 	}
